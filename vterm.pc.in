@@ -1,8 +1,5 @@
-libdir=@LIBDIR@
-includedir=@INCDIR@
-
-Name: vterm
-Description: Abstract VT220/Xterm/ECMA-48 emulation library
-Version: 0.3.3
-Libs: -L${libdir} -lvterm
-Cflags: -I${includedir}
+Name: @PROJECT_NAME@
+Description: @PROJECT_DESCRIPTION@
+Version: @PROJECT_VERSION@
+Libs: -L@CMAKE_INSTALL_PREFIX@/lib -lvterm
+Cflags: -I"@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME@"

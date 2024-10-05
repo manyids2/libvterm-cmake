@@ -49,14 +49,38 @@ INCDIR=$(PREFIX)/include
 MANDIR=$(PREFIX)/share/man
 MAN3DIR=$(MANDIR)/man3
 
+.PHONY: debug
+debug:
+	@echo "CFILES       = " "$(sort $(wildcard src/*.c))"
+	@echo "HFILES       = " "$(sort $(wildcard include/*.h))"
+	@echo "OBJECTS      = " "$(CFILES:.c=.lo)"
+	@echo "LIBRARY      = " "libvterm.la"
+
+	@echo "BINFILES_SRC = " "$(sort $(wildcard bin/*.c))"
+	@echo "BINFILES     = "      "$(BINFILES_SRC:.c=)"
+
+	@echo "TBLFILES     = " "$(sort $(wildcard src/encoding/*.tbl))"
+	@echo "INCFILES     = " "$(TBLFILES:.tbl=.inc)"
+
+	@echo "HFILES_INT   = " "$(sort $(wildcard src/*.h)) $(HFILES)"
+
+	@echo "PREFIX       = " "/usr/local"
+	@echo "BINDIR       = " "$(PREFIX)/bin"
+	@echo "LIBDIR       = " "$(PREFIX)/lib"
+	@echo "INCDIR       = " "$(PREFIX)/include"
+	@echo "MANDIR       = " "$(PREFIX)/share/man"
+	@echo "MAN3DIR      = " "$(MANDIR)/man3"
+
+
+# libvterm.la, bin/unterm, bin/vterm-ctrl, bin/vterm-dump
 all: $(LIBRARY) $(BINFILES)
 
 $(LIBRARY): $(OBJECTS)
-	@echo LINK $@
+	@echo LINK "$@ <-- $^"
 	@$(LIBTOOL) --mode=link --tag=CC $(CC) -rpath $(LIBDIR) -version-info $(VERSION_CURRENT):$(VERSION_REVISION):$(VERSION_AGE) -o $@ $^ $(LDFLAGS)
 
 src/%.lo: src/%.c $(HFILES_INT)
-	@echo CC $<
+	@echo CC "$@ <-- $<"
 	@$(LIBTOOL) --mode=compile --tag=CC $(CC) $(CFLAGS) -o $@ -c $<
 
 src/encoding/%.inc: src/encoding/%.tbl
@@ -69,15 +93,15 @@ src/fullwidth.inc:
 src/encoding.lo: $(INCFILES)
 
 bin/%: bin/%.c $(LIBRARY)
-	@echo CC $<
+	@echo CC "$@ <-- $<"
 	@$(LIBTOOL) --mode=link --tag=CC $(CC) $(CFLAGS) -o $@ $< -lvterm $(LDFLAGS)
 
 t/harness.lo: t/harness.c $(HFILES)
-	@echo CC $<
+	@echo CC "$@ <-- $<"
 	@$(LIBTOOL) --mode=compile --tag=CC $(CC) $(CFLAGS) -o $@ -c $<
 
 t/harness: t/harness.lo $(LIBRARY)
-	@echo LINK $@
+	@echo LINK "$@ <-- ^"
 	@$(LIBTOOL) --mode=link --tag=CC $(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 .PHONY: test
