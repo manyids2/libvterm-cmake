@@ -4,6 +4,7 @@ project(vterm
   DESCRIPTION "Abstract VT220/Xterm/ECMA-48 emulation library"
   VERSION 0.3.3)
 
+include_directories(include src)
 add_library(${PROJECT_NAME} STATIC
   src/vterm.c
   src/pen.c
@@ -13,7 +14,14 @@ add_library(${PROJECT_NAME} STATIC
   src/state.c
   src/parser.c
   src/mouse.c
-  src/keyboard.c)
+  src/keyboard.c
+  src/rect.h
+  src/utf8.h
+  src/vterm_internal.h
+  src/fullwidth.inc
+  include/vterm.h
+  include/vterm_keycodes.h
+)
 
 target_link_libraries(${PROJECT_NAME})
 
